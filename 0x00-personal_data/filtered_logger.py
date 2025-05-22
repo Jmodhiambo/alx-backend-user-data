@@ -81,3 +81,29 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+
+def main() -> None:
+    """Main function that fetches and logs user data from the database."""
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+
+    # Column names in the table (same order as the SELECT *)
+    columns = [desc[0] for desc in cursor.description]
+
+    logger = get_logger()
+
+    for row in cursor:
+        # Map column names to values
+        # build a log line like key=value; key=value; ...
+        row_dict = dict(zip(columns, row))
+        log_message = "; ".join(f"{k}={v}" for k, v in row_dict.items()) + ";"
+        logger.info(log_message)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
