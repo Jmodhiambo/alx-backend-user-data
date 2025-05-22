@@ -6,6 +6,9 @@ Logging module for filtering PII data.
 import logging
 import re
 from typing import List
+import os
+import mysql.connector
+from mysql.connector.connection import MySQLConnection
 
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
@@ -23,6 +26,24 @@ def filter_datum(fields: List[str], redaction: str,
             message
         )
     return message
+
+
+def get_db() -> MySQLConnection:
+    """
+    Connects to a secure Holberton MySQL database using credentials from
+    environment variables and returns a MySQLConnection object.
+    """
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    database = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=database
+    )
 
 
 class RedactingFormatter(logging.Formatter):
@@ -56,7 +77,7 @@ def get_logger() -> logging.Logger:
     logger.propagate = False
 
     stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    stream_handler.setFormatter(RedactingFormatter(fields=list(PII_FIELDS)))
     logger.addHandler(stream_handler)
 
     return logger
