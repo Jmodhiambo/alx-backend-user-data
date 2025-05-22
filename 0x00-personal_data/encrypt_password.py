@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Password hashing utility.
+Password hashing and validation utility.
 """
 
 import bcrypt
@@ -16,8 +16,19 @@ def hash_password(password: str) -> bytes:
     Returns:
         bytes: The salted and hashed password.
     """
-    # Convert string to bytes
     password_bytes = password.encode('utf-8')
-    # Generate salt and hash password
-    hashed = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
-    return hashed
+    return bcrypt.hashpw(password_bytes, bcrypt.gensalt())
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    """
+    Check if a provided password matches the hashed password.
+
+    Args:
+        hashed_password (bytes): The hashed password.
+        password (str): The plain text password to validate.
+
+    Returns:
+        bool: True if password matches hashed_password, False otherwise.
+    """
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
