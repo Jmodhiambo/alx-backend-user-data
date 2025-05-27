@@ -16,8 +16,13 @@ app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 auth = None
 
-auth = getenv("AUTH_TYPE", None)
-if auth:
+auth_type = getenv("AUTH_TYPE")
+
+if auth_type == "basic_auth":
+    from api.v1.auth.basic_auth import BasicAuth
+    auth = BasicAuth()
+elif auth_type == "auth":
+    from api.v1.auth.auth import Auth
     auth = Auth()
 
 
@@ -28,7 +33,9 @@ def auth_handle():
         return
 
     excluded_paths = [
-        '/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/'
+        '/api/v1/status/',
+        '/api/v1/unauthorized/',
+        '/api/v1/forbidden/'
     ]
 
     if auth.require_auth(request.path, excluded_paths):
