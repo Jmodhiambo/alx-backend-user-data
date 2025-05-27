@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Class Auth
+file: api/v1/auth/auth.py
 """
 
 from flask import request
@@ -26,8 +27,11 @@ class Auth:
         return True
 
     def authorization_header(self, request=None) -> str:
-        """Returns None (placeholder for header extraction logic)"""
-        return None
+        """Retrieve the Authorization header from the request"""
+        if request is None or "Authorization" not in request.headers:
+            return None
+
+        return request.headers.get("Authorization")
 
     def current_user(self, request=None) -> TypeVar('User'):
         """Returns None (placeholder for user retrieval logic)"""
