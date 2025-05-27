@@ -20,7 +20,7 @@ class Auth:
             path += "/"
 
         # Check against all excluded paths
-        if new_path in excluded_paths:
+        if path in excluded_paths:
             return False
 
         return True
