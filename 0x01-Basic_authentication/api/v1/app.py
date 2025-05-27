@@ -5,10 +5,10 @@ File: api/v1/app.py
 """
 from os import getenv
 from api.v1.views import app_views
-from flask import Flask, jsonify, abort, request
+from flask import Flask, jsonify, abort, request, Response
 from flask_cors import (CORS, cross_origin)
 import os
-from api.v1.auth.auth import Auth
+from typing import Optional
 
 
 app = Flask(__name__)
