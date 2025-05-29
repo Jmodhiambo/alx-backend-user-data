@@ -29,7 +29,7 @@ elif auth_type == "session_auth":
 
 
 @app.before_request
-def auth_handle():
+def auth_handle() -> str:
     """auth handle."""
     if auth is None:
         return
@@ -44,17 +44,19 @@ def auth_handle():
     request.current_user = None
 
     if auth.require_auth(request.path, excluded_paths):
-        if auth.authorization_header(request) is None:
-            abort(401)
+        return
 
-        if auth.session_cookie(request) is None:
-            abort(401)
+    if auth.authorization_header(request) is None:
+        abort(401)
 
-        user = auth.current_user(request)
-        if user is None:
-            abort(403)
+    if auth.session_cookie(request) is None:
+        abort(401)
 
-        request.current_user = user
+    user = auth.current_user(request)
+    if user is None:
+        abort(403)
+
+    request.current_user = user
 
 
 @app.errorhandler(404)
