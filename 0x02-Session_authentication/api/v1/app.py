@@ -44,19 +44,17 @@ def auth_handle() -> str:
     request.current_user = None
 
     if auth.require_auth(request.path, excluded_paths):
-        return
+        if auth.authorization_header(request) is None:
+            abort(401)
 
-    if auth.authorization_header(request) is None:
-        abort(401)
+        if auth.session_cookie(request) is None:
+            abort(401)
 
-    if auth.session_cookie(request) is None:
-        abort(401)
+        user = auth.current_user(request)
+        if user is None:
+            abort(403)
 
-    user = auth.current_user(request)
-    if user is None:
-        abort(403)
-
-    request.current_user = user
+        request.current_user = user
 
 
 @app.errorhandler(404)
