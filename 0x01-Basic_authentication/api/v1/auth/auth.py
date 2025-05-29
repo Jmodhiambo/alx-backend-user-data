@@ -20,9 +20,19 @@ class Auth:
         if not path.endswith("/"):
             path += "/"
 
-        # Check against all excluded paths
-        if path in excluded_paths:
-            return False
+        # Normalize excluded paths
+        for excluded in excluded_paths:
+            if excluded.endswith('*'):
+                # Wildcard path prefix match
+                prefix = excluded[:-1]
+                if path.startswith(prefix):
+                    return False
+            else:
+                # Normalize to include trailing slash
+                if not excluded.endswith('/'):
+                    excluded += '/'
+                if path == excluded:
+                    return False
 
         return True
 
