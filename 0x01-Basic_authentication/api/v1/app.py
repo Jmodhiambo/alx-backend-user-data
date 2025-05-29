@@ -27,7 +27,7 @@ elif auth_type == "auth":
 
 
 @app.before_request
-def auth_handle():
+def auth_handle() -> Optional[Response]:
     """auth handle."""
     if auth is None:
         return
