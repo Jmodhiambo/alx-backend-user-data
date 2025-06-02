@@ -60,7 +60,7 @@ def auth_handle() -> str:
         if user is None:
             abort(403)
 
-        request.current_user = user"""
+        request.current_user = user
     if auth.require_auth(request.path, excluded_paths):
         user = None
 
@@ -72,6 +72,28 @@ def auth_handle() -> str:
         if user is None:
             abort(401)
 
+        request.current_user = user"""
+    if auth.require_auth(request.path, excluded_paths):
+        # 1) Grab whichever credential method is in use:
+        auth_header = auth.authorization_header(request)
+        session_id = auth.session_cookie(request)
+
+        # 2) If neither header nor cookie is present → 401 Unauthorized
+        if auth_header is None and session_id is None:
+            abort(401)
+
+        # 3) Try to get a user from whichever is present
+        user = None
+        if auth_header:
+            user = auth.current_user(request)
+        elif session_id:
+            user = auth.current_user(request)
+
+        # 4) If header/cookie was present but didn't map to a valid user
+        if user is None:
+            abort(403)
+
+        # 5) Finally, stash the authenticated user on the request
         request.current_user = user
 
 
