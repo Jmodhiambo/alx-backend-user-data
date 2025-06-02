@@ -49,30 +49,6 @@ def auth_handle() -> str:
 
     request.current_user = None
 
-    """if auth.require_auth(request.path, excluded_paths):
-        if auth.authorization_header(request) is None:
-            abort(401)
-
-        if auth.session_cookie(request) is None:
-            abort(401)
-
-        user = auth.current_user(request)
-        if user is None:
-            abort(403)
-
-        request.current_user = user
-    if auth.require_auth(request.path, excluded_paths):
-        user = None
-
-        if auth.authorization_header(request):
-            user = auth.current_user(request)
-        elif auth.session_cookie(request):
-            user = auth.current_user(request)
-
-        if user is None:
-            abort(401)
-
-        request.current_user = user"""
     if auth.require_auth(request.path, excluded_paths):
         # 1) Grab whichever credential method is in use:
         auth_header = auth.authorization_header(request)
