@@ -38,3 +38,21 @@ class DB:
         session.commit()  # Commits the changes to the database.
 
         return new_user
+
+    def find_user_by(self, email=None) -> User:
+        """
+        Returns the first row found in the users table as filtered by
+        the method’s input arguments."""
+
+        session = self._session
+
+        if not kwargs:
+            raise InvalidRequestError
+
+        try:
+            user = session.query(User).filter_by(email=email).first()
+            return user
+        except NoResultFound:
+            raise NoResultFound
+        except Exception:
+            raise InvalidRequestError
