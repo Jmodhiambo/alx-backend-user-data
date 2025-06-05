@@ -41,7 +41,7 @@ class DB:
 
         return new_user
 
-    def find_user_by(self, email=None) -> User:
+    def find_user_by(self, **kwargs) -> User:
         """
         Returns the first row found in the users table as filtered by
         the method’s input arguments."""
@@ -52,7 +52,7 @@ class DB:
             raise InvalidRequestError
 
         try:
-            user = session.query(User).filter_by(email=email).first()
+            user = session.query(User).filter_by(**kwargs).one()
             return user
         except NoResultFound:
             raise NoResultFound
