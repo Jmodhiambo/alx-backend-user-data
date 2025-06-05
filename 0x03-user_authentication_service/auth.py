@@ -37,6 +37,17 @@ class Auth:
             return False
         return True
 
+    def create_session(self, email: str) -> str:
+        """Creates a session and returns session ID."""
+        db = self._db
+        try:
+            user = db.find_user_by(email=email)
+            session_id = _generate_uuid()
+            db.update_user(user.id, session_id=session_id)
+            return session_id
+        except NoResultFound:
+            return None
+
 
 def _hash_password(password: str) -> bytes:
     """Encrypts a password using bcrypt."""
@@ -53,4 +64,4 @@ def _hash_password(password: str) -> bytes:
 
 def _generate_uuid() -> str:
     """Generates uuid4."""
-    return str(uuid4)
+    return str(uuid4())
