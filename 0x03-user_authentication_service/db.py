@@ -34,7 +34,16 @@ class DB:
         """Saves user to the databases with hashed password."""
         new_user = User(email=email, hashed_password=hashed_password)
         session = self._session
-        session.add(new_user)
+
+        try:
+            new_user = User(email=email, hashed_password=hashed_password)
+            session.add(new_user)
+            session.commit()
+        except Exception:
+            session.rollback()
+            new_user = None
+        return new_user
+        """session.add(new_user)
         session.commit()  # Commits the changes to the database.
 
-        return new_user
+        return new_user"""
