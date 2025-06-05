@@ -44,7 +44,7 @@ class DB:
         Returns the first row found in the users table as filtered by
         the method’s input arguments."""
 
-        """session = self._session
+       session = self._session
 
         if not kwargs:
             raise InvalidRequestError
@@ -55,17 +55,4 @@ class DB:
         except NoResultFound:
             raise NoResultFound
         except Exception:
-            raise InvalidRequestError"""
-        attrs, vals = [], []
-        for attr, val in kwargs.items():
-            if not hasattr(User, attr):
-                raise InvalidRequestError()
-            attrs.append(getattr(User, attr))
-            vals.append(val)
-
-        session = self._session
-        query = session.query(User)
-        user = query.filter(tuple_(*attrs).in_([tuple(vals)])).first()
-        if not user:
-            raise NoResultFound()
-        return user
+            raise InvalidRequestError
