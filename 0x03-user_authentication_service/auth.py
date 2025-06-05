@@ -25,10 +25,21 @@ class Auth:
         else:
             raise ValueError(f"User {email} already exists")
 
+    def valid_login(self, email: str, password: str) -> bool:
+        """Validates a user."""
+        db = self._db
+        try:
+            user = db.find_user_by(email=email)
+        except NoResultFound:
+            return False
+        if not bcrypt.checkpw(password.encode('utf-8'), user.hashed_password):
+            return False
+        return True
+
 
 def _hash_password(password: str) -> bytes:
     """Encrypts a password using bcrypt."""
-    password = password.encode()  # Convert password to bytes
+    password = password.encode('utf-8')  # Convert password to bytes
 
     # Generate salt
     salt: bytes = bcrypt.gensalt()
