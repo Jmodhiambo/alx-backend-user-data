@@ -16,13 +16,17 @@ def home() -> dict:
 
 @app.route("/users", methods=["POST"])
 def registering_user():
-    """Registers user from the form input."""
+    """Registers user from the form input.
+        Form fields:
+            - email
+            - password
+    """
     email: str = request.form.get("email")
     password: str = request.form.get("password")
 
     try:
         user = AUTH.register_user(email, password)
-        return jsonify(email=user.email, message="user created")
+        return jsonify(email=email, message="user created")
     except ValueError:
         return jsonify(message="email already registered"), 400
 
