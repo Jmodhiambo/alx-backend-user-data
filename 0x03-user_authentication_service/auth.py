@@ -73,6 +73,18 @@ class Auth:
         db.update_user(user.id, reset_token=reset_token)
         return reset_token
 
+    def update_password(self, reset_token: str, password: str) -> None:
+        """Updates user's password and clears reset_token."""
+        db = self._db
+
+        try:
+            user = db.find_user_by(reset_token=reset_token)
+        except NoResultFound:
+            raise ValueError
+
+        hashed_pwd = _hash_password(password)
+        db.update_user(user.id, hashed_password=hashed_pwd, reset_token=None)
+
     def destroy_session(self, user_id: int) -> None:
         """Destroys the session by updating session ID to None."""
         db = self._db
