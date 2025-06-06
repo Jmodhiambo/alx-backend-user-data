@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Basic Flask App."""
 
-from flask import Flask, jsonify, request, redirect, url_for
+from flask import Flask, jsonify, request, redirect, url_for, abort
 from auth import Auth
 
 app = Flask(__name__)
@@ -57,6 +57,18 @@ def logout():
 
     AUTH.destroy_session(user.id)
     return redirect(url_for("home"))
+
+
+@app.route("/profile", methods=["GET"])
+def profile():
+    """Gets the user profile using session ID from cookies."""
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+
+    if user is None:
+        abort(403)
+
+    return jsonify({"email": user.email}), 200
 
 
 if __name__ == "__main__":
